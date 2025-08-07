@@ -1,0 +1,86 @@
+package com.cbs.elctronic.store.services.impl;
+
+import com.cbs.elctronic.store.dtos.UserDto;
+import com.cbs.elctronic.store.entities.User;
+import com.cbs.elctronic.store.repositories.UserRepository;
+import com.cbs.elctronic.store.services.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public UserDto createUser(UserDto userDto) {
+
+        String userId= UUID.randomUUID().toString();
+        userDto.setUserId(userId);
+        User user = modelMapper.map(userDto, User.class);
+        User savedUser = userRepository.save(user);
+
+        return modelMapper.map(savedUser,UserDto.class);
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto, String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id"));
+        user.setName(userDto.getName());
+        user.setAbout(userDto.getAbout());
+        user.setEmail(userDto.getEmail());
+        user.setGender(userDto.getGender());
+        user.setPassword(userDto.getPassword());
+        user.setImageName(userDto.getImageName());
+        User savedUser = userRepository.save(user);
+
+        return modelMapper.map(savedUser, UserDto.class);
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id"));
+        userRepository.delete(user);
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        List<UserDto> collectedUsers = allUsers.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        return collectedUsers;
+    }
+
+    @Override
+    public UserDto getUserById(String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id."));
+
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with given email"));
+
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public List<UserDto> searchUser(String keyword) {
+        List<User> byNameContaining = userRepository.findByNameContaining(keyword);
+        List<UserDto> collectedUsers = byNameContaining.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+
+        return collectedUsers;
+    }
+}
