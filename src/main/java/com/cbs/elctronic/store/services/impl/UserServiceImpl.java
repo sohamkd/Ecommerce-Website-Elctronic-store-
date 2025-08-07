@@ -2,6 +2,7 @@ package com.cbs.elctronic.store.services.impl;
 
 import com.cbs.elctronic.store.dtos.UserDto;
 import com.cbs.elctronic.store.entities.User;
+import com.cbs.elctronic.store.exceptions.ResourceNotFoundException;
 import com.cbs.elctronic.store.repositories.UserRepository;
 import com.cbs.elctronic.store.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, String userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with given id"));
         user.setName(userDto.getName());
         user.setAbout(userDto.getAbout());
         user.setEmail(userDto.getEmail());
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with given id"));
         userRepository.delete(user);
     }
 
@@ -64,14 +65,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(String userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with given id."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with given id."));
 
         return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with given email"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with given email"));
 
         return modelMapper.map(user, UserDto.class);
     }
