@@ -1,5 +1,6 @@
 package com.cbs.elctronic.store.services;
 
+import com.cbs.elctronic.store.dtos.PageableResponse;
 import com.cbs.elctronic.store.dtos.UserDto;
 import com.cbs.elctronic.store.entities.User;
 
@@ -13,7 +14,7 @@ public interface UserService {
 
     void deleteUser(String userId);
 
-    List<UserDto> getAllUsers();
+    PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     UserDto getUserById(String userId);
 

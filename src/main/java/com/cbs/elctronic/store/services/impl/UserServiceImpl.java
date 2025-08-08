@@ -1,12 +1,18 @@
 package com.cbs.elctronic.store.services.impl;
 
+import com.cbs.elctronic.store.dtos.PageableResponse;
 import com.cbs.elctronic.store.dtos.UserDto;
 import com.cbs.elctronic.store.entities.User;
 import com.cbs.elctronic.store.exceptions.ResourceNotFoundException;
+import com.cbs.elctronic.store.helper.Helper;
 import com.cbs.elctronic.store.repositories.UserRepository;
 import com.cbs.elctronic.store.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,10 +62,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        List<UserDto> collectedUsers = allUsers.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
-        return collectedUsers;
+    public PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort= (sortDir.equalsIgnoreCase("asc")) ? (Sort.by(sortBy).ascending()) : (Sort.by(sortBy).descending());
+        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<User> page = userRepository.findAll(pageable);
+        PageableResponse<UserDto> pageableResponse = Helper.getPageableResponse(page, UserDto.class);
+
+        return pageableResponse;
     }
 
     @Override

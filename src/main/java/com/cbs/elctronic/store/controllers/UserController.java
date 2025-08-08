@@ -1,6 +1,7 @@
 package com.cbs.elctronic.store.controllers;
 
 import com.cbs.elctronic.store.dtos.ApiResponse;
+import com.cbs.elctronic.store.dtos.PageableResponse;
 import com.cbs.elctronic.store.dtos.UserDto;
 import com.cbs.elctronic.store.services.UserService;
 import jakarta.validation.Valid;
@@ -41,9 +42,12 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers()
+    public ResponseEntity<PageableResponse<UserDto>> getAllUsers(@RequestParam(value = "pageNumber",defaultValue ="0",required = false) int pageNumber,
+                                                        @RequestParam(value = "pageSize",defaultValue ="5",required = false) int pageSize,
+                                                        @RequestParam(value = "sortDir",defaultValue ="asc",required = false) String sortDir,
+                                                        @RequestParam(value = "sortBy",defaultValue ="name",required = false) String sortBy)
     {
-        List<UserDto> allUsers = userService.getAllUsers();
+        PageableResponse<UserDto> allUsers = userService.getAllUsers(pageNumber,pageSize,sortBy,sortDir);
         return new ResponseEntity<>(allUsers,HttpStatus.OK);
     }
 
