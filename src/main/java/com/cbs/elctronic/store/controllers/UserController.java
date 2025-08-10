@@ -78,7 +78,7 @@ public class UserController {
         return new ResponseEntity<>(userById,HttpStatus.OK);
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/email/{userEmail}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String userEmail)
     {
         UserDto userByEmail = userService.getUserByEmail(userEmail);
