@@ -1,5 +1,6 @@
 package com.cbs.elctronic.store.dtos;
 
+import com.cbs.elctronic.store.entities.Category;
 import lombok.*;
 
 import java.util.Date;
@@ -28,4 +29,8 @@ public class ProductDto {
     private boolean live;
 
     private boolean stock;
+
+    private String productImage;
+
+    private CategoryDto category;
 }
