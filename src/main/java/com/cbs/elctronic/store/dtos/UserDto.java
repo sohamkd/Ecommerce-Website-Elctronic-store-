@@ -1,11 +1,15 @@
 package com.cbs.elctronic.store.dtos;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
+import com.cbs.elctronic.store.entities.Order;
 import com.cbs.elctronic.store.validate.ImageNameValid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +38,6 @@ public class UserDto {
 
     @ImageNameValid
     private String imageName;
+
+    private List<OrderDto> orderDtos=new ArrayList<>();
 }
